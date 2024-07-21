@@ -7,11 +7,14 @@ import {
   Post,
   Put,
   Query,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 
 @Controller('products')
 export class ProductsController {
   @Get(':productID')
+  @HttpCode(HttpStatus.OK)
   get(@Param() params: any) {
     return {
       message: `product id => ${params.productID}`,
