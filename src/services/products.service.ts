@@ -8,7 +8,7 @@ export class ProductsService {
     {
       id: 1,
       name: 'Product 1',
-      description: 'blablabla',
+      description: 'Bla Bla Bla',
       price: 149.99,
       image: '',
       stock: 30,
@@ -20,7 +20,7 @@ export class ProductsService {
   }
 
   findOne(id: number) {
-    this.products.find((item) => item.id === id);
+    return this.products.find((item) => item.id == id);
   }
 
   create(payload: any) {
@@ -33,8 +33,22 @@ export class ProductsService {
     return newProduct;
   }
 
-  update(payload: any, id: number) {
+  update(id: number, payload: any) {
     const productToUpdate = this.findOne(id);
-    productToUpdate = payload;
+    if (productToUpdate !== undefined) {
+      const index = this.products.findIndex((item) => item.id === id);
+      this.products[index] = {
+        ...productToUpdate,
+        ...payload,
+      };
+      return this.products[index];
+    }
+    return null;
+  }
+
+  delete(id: number) {
+    const index = this.products.findIndex((item) => (item.id = id));
+    this.products.splice(index, 1);
+    return id;
   }
 }
