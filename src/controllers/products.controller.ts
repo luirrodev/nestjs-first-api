@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  ParseIntPipe,
 } from '@nestjs/common';
 
 import { ProductsService } from 'src/services/products.service';
@@ -15,7 +16,7 @@ export class ProductsController {
   constructor(private productService: ProductsService) {}
 
   @Get(':id')
-  getOne(@Param('id') id: number) {
+  getOne(@Param('id', ParseIntPipe) id: number) {
     return this.productService.findOne(id);
   }
 
