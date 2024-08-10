@@ -11,7 +11,7 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "pm2 start dist/main.js --name platzi-store-v1",
+    "start:prod": "serve dist -s -n -L",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -31,7 +31,8 @@
     "joi": "^17.12.3",
     "pm2": "^5.4.2",
     "reflect-metadata": "^0.2.0",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "serve": "^14.2.3"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
