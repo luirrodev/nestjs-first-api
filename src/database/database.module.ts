@@ -24,7 +24,7 @@ import config from 'src/config';
           database,
           password,
           port,
-          synchronize: true,
+          synchronize: false,
           autoLoadEntities: true,
         };
       },

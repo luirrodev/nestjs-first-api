@@ -29,7 +29,7 @@ export class ProductsService {
   }
 
   async update(id: number, changes: UpdateProductDTO) {
-    const productToUpdate = await this.productRepo.findOne(id);
+    const productToUpdate = await this.findOne(id);
     this.productRepo.merge(productToUpdate, changes);
     return this.productRepo.save(productToUpdate);
   }
