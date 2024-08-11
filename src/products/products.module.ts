@@ -12,7 +12,7 @@ import { BrandsService } from './services/brands.service';
 import { Brand } from './entities/brand.entity';
 
 @Module({
-  // imports: [TypeOrmModule.forFeature([Product, Category, Brand])],
+  imports: [TypeOrmModule.forFeature([Product])],
   controllers: [ProductsController, CategoriesController, BrandsController],
   providers: [ProductsService, CategoriesService, BrandsService],
   exports: [ProductsService],
