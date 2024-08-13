@@ -35,6 +35,12 @@ export class CreateProductDTO {
   @IsPositive()
   @ApiProperty()
   readonly stock: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  @IsPositive()
+  @ApiProperty()
+  readonly brandId: number;
 }
 
 export class UpdateProductDTO extends PartialType(CreateProductDTO) {}
