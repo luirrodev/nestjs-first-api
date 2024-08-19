@@ -12,6 +12,6 @@ export class AppController {
 
   @Get('nuevo')
   newEndpoint() {
-    return 'Yo soy un nuevo Endpoint';
+    return this.appService.serveJSON();
   }
 }
