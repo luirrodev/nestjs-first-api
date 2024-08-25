@@ -1,65 +1,61 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import { Product } from '../entities/product.entity';
+import { Category } from '../entities/category.entity';
+import { Brand } from '../entities/brand.entity';
 import { CreateProductDTO, UpdateProductDTO } from '../dtos/product.dtos';
 
 @Injectable()
 export class ProductsService {
-  private counterId = 1;
-  private products: Product[] = [
-    {
-      id: 1,
-      name: 'Product 1',
-      description: 'Bla Bla Bla',
-      price: 149.99,
-      image: '',
-      stock: 30,
-    },
-  ];
+  constructor(
+    @InjectRepository(Product) private productRepo: Repository<Product>,
+    @InjectRepository(Category) private categoryRepo: Repository<Category>,
+    @InjectRepository(Brand) private brandRepo: Repository<Brand>,
+  ) {}
 
   findAll() {
-    return this.products;
+    return this.productRepo.find({
+      relations: ['brand'],
+    });
   }
 
-  findOne(id: number) {
-    const product = this.products.find((item) => item.id == id);
+  async findOne(id: number) {
+    const product = await this.productRepo.findOne(id, {
+      relations: ['brand', 'categories'],
+    });
     if (!product) {
       throw new NotFoundException('Este producto no existe');
     }
     return product;
   }
 
-  create(payload: CreateProductDTO) {
-    console.log(payload);
-
-    this.counterId++;
-    const newProduct = {
-      id: this.counterId,
-      ...payload,
-    };
-    this.products.push(newProduct);
-    return newProduct;
+  async create(data: CreateProductDTO) {
+    const newProduct = this.productRepo.create(data);
+    if (data.brandId) {
+      const brand = await this.brandRepo.findOne(data.brandId);
+      newProduct.brand = brand;
+    }
+    if (data.categoriesId) {
+      const categories = await this.categoryRepo.findByIds(data.categoriesId);
+      newProduct.categories = categories;
+    }
+    return this.productRepo.save(newProduct);
   }
 
-  update(id: number, payload: UpdateProductDTO) {
-    const productToUpdate = this.findOne(id);
-    if (productToUpdate !== undefined) {
-      const index = this.products.findIndex((item) => item.id === id);
-      this.products[index] = {
-        ...productToUpdate,
-        ...payload,
-      };
-      return this.products[index];
+  async update(id: number, changes: UpdateProductDTO) {
+    const productToUpdate = await this.findOne(id);
+    if (changes.brandId) {
+      const brand = await this.brandRepo.findOne(changes.brandId);
+      productToUpdate.brand = brand;
     }
-    return null;
+    this.productRepo.merge(productToUpdate, changes);
+    return this.productRepo.save(productToUpdate);
   }
 
-  remove(id: number) {
-    const index = this.products.findIndex((item) => (item.id = id));
-    if (index === -1) {
-      throw new NotFoundException('Este producto no existe');
-    }
-    this.products.splice(index, 1);
-    return true;
+  async remove(id: number) {
+    await this.findOne(id);
+    return this.productRepo.delete(id);
   }
 }

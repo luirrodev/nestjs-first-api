@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 import { enviroments } from './enviroments';
 import { ProductsModule } from './products/products.module';
 import { UsersModule } from './users/users.module';
+import { DatabaseModule } from './database/database.module';
 import config from './config';
 
 @Module({
@@ -19,10 +20,16 @@ import config from './config';
         API_KEY: Joi.number().required(),
         DATABASE_NAME: Joi.string().required(),
         DATABASE_PORT: Joi.number().required(),
+        POSTGRES_USER: Joi.string().required(),
+        POSTGRES_PASSWORD: Joi.string().required(),
+        POSTGRES_DB: Joi.string().required(),
+        POSTGRES_HOST: Joi.string().required(),
+        POSTGRES_PORT: Joi.number().required(),
       }),
     }),
     UsersModule,
     ProductsModule,
+    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],
