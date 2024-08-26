@@ -7,6 +7,7 @@ import {
   OneToMany,
   JoinColumn,
 } from 'typeorm';
+import { Exclude, Expose } from 'class-transformer';
 
 import { Customer } from './customer.entity';
 import { OrderProduct } from 'src/products/entities/order-product.entity';
@@ -36,6 +37,34 @@ export class Order {
   @JoinColumn({ name: 'customer_id' })
   customer: Customer;
 
+  @Exclude()
   @OneToMany(() => OrderProduct, (orderProduct) => orderProduct.order)
   products: OrderProduct[];
+
+  @Expose()
+  get items() {
+    if (this.products) {
+      return this.products
+        .filter((product) => !!product)
+        .map((product) => ({
+          ...product.product,
+          quantity: product.quantity,
+          itemId: product.id,
+        }));
+    }
+    return [];
+  }
+
+  @Expose()
+  get total() {
+    if (this.products) {
+      return this.products
+        .filter((product) => !!product)
+        .reduce((total, item) => {
+          const totalProduct = item.product.price * item.quantity;
+          return total + totalProduct;
+        }, 0);
+    }
+    return 0;
+  }
 }
