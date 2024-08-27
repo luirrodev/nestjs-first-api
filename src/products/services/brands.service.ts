@@ -18,7 +18,8 @@ export class BrandsService {
   }
 
   async findOne(id: number) {
-    const brand = await this.brandRepo.findOne(id, {
+    const brand = await this.brandRepo.findOne({
+      where: { id },
       relations: ['products'],
     });
     if (!brand) {
@@ -28,7 +29,9 @@ export class BrandsService {
   }
 
   async create(data: CreateBrandDto) {
-    const existingBrand = await this.brandRepo.findOne({ name: data.name });
+    const existingBrand = await this.brandRepo.findOne({
+      where: { name: data.name },
+    });
     if (existingBrand) {
       throw new ConflictException('This brand already exists');
     }
@@ -39,13 +42,17 @@ export class BrandsService {
   async update(id: number, changes: UpdateBrandDto) {
     if (changes.name) {
       const existingBrand = await this.brandRepo.findOne({
-        name: changes.name,
+        where: {
+          name: changes.name,
+        },
       });
       if (existingBrand) {
         throw new ConflictException('This brand already exists');
       }
     }
-    const brandToUpdate = await this.brandRepo.findOne(id);
+    const brandToUpdate = await this.brandRepo.findOne({
+      where: { id },
+    });
     this.brandRepo.merge(brandToUpdate, changes);
     return this.brandRepo.save(brandToUpdate);
   }

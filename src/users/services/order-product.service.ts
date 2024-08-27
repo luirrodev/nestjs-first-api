@@ -20,8 +20,12 @@ export class OrderProductService {
   ) {}
 
   async create(data: CreateOrderProductDTO) {
-    const order = await this.orderRepo.findOne(data.orderId);
-    const product = await this.productRepo.findOne(data.productId);
+    const order = await this.orderRepo.findOne({
+      where: { id: data.orderId },
+    });
+    const product = await this.productRepo.findOne({
+      where: { id: data.productId },
+    });
     const item = new OrderProduct();
 
     item.order = order;
@@ -32,10 +36,21 @@ export class OrderProductService {
   }
 
   async update(id: number, changes: UpdateOrderProductDto) {
-    const item = await this.itemRepo.findOne(id);
+    const item = await this.itemRepo.findOne({ where: { id } });
 
+    if (changes.orderId) {
+      const order = await this.orderRepo.findOne({
+        where: { id: changes.orderId },
+      });
+      item.order = order;
+    }
+    if (changes.productId) {
+      const product = await this.productRepo.findOne({
+        where: { id: changes.productId },
+      });
+      item.product = product;
+    }
     this.itemRepo.merge(item, changes);
-
     return this.itemRepo.save(item);
   }
 

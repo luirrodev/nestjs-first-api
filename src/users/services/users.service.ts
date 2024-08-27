@@ -26,7 +26,8 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    const user = await this.userRepo.findOne(id, {
+    const user = await this.userRepo.findOne({
+      where: { id },
       relations: ['customer'],
     });
     if (!user) {
@@ -36,7 +37,9 @@ export class UsersService {
   }
 
   async create(data: CreateUserDto) {
-    const existingUser = await this.userRepo.findOne({ email: data.email });
+    const existingUser = await this.userRepo.findOne({
+      where: { email: data.email },
+    });
 
     if (existingUser) {
       throw new ConflictException('This email is already in use');
@@ -50,7 +53,9 @@ export class UsersService {
   }
 
   async update(id: number, changes: UpdateUserDto) {
-    const existingUser = await this.userRepo.findOne({ email: changes.email });
+    const existingUser = await this.userRepo.findOne({
+      where: { email: changes.email },
+    });
 
     if (existingUser) {
       throw new ConflictException('This email is already in use');

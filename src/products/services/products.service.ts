@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, FindConditions } from 'typeorm';
+import { Repository, Between, FindOptionsWhere, In } from 'typeorm';
 
 import { Product } from '../entities/product.entity';
 import { Category } from '../entities/category.entity';
@@ -21,7 +21,7 @@ export class ProductsService {
 
   findAll(params?: FilterProductsDTO) {
     if (params) {
-      const where: FindConditions<Product> = {};
+      const where: FindOptionsWhere<Product> = {};
       const { limit, offset } = params;
       const { maxPrice, minPrice } = params;
       if (maxPrice && minPrice) {
@@ -40,7 +40,8 @@ export class ProductsService {
   }
 
   async findOne(id: number) {
-    const product = await this.productRepo.findOne(id, {
+    const product = await this.productRepo.findOne({
+      where: { id },
       relations: ['brand', 'categories'],
     });
     if (!product) {
@@ -52,20 +53,24 @@ export class ProductsService {
   async create(data: CreateProductDTO) {
     const newProduct = this.productRepo.create(data);
     if (data.brandId) {
-      const brand = await this.brandRepo.findOne(data.brandId);
+      const brand = await this.brandRepo.findOne({
+        where: { id: data.brandId },
+      });
       newProduct.brand = brand;
     }
     if (data.categoriesId) {
-      const categories = await this.categoryRepo.findByIds(data.categoriesId);
+      const categories = await this.categoryRepo.findBy({
+        id: In(data.categoriesId),
+      });
       newProduct.categories = categories;
     }
     return this.productRepo.save(newProduct);
   }
 
   async update(id: number, changes: UpdateProductDTO) {
-    const productToUpdate = await this.findOne(id);
+    const productToUpdate = await this.productRepo.findOneBy({ id });
     if (changes.brandId) {
-      const brand = await this.brandRepo.findOne(changes.brandId);
+      const brand = await this.brandRepo.findOneBy({ id: changes.brandId });
       productToUpdate.brand = brand;
     }
     this.productRepo.merge(productToUpdate, changes);
