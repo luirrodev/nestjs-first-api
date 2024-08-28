@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   ManyToMany,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 
 import { Product } from './product.entity';
 @Entity({
@@ -18,6 +19,7 @@ export class Category {
   @Column({ type: 'varchar', length: 255, unique: true })
   name: string;
 
+  @Exclude()
   @CreateDateColumn({
     type: 'timestamptz',
     name: 'created_at',
@@ -25,6 +27,7 @@ export class Category {
   })
   createdAt: Date;
 
+  @Exclude()
   @UpdateDateColumn({
     type: 'timestamptz',
     name: 'update_at',

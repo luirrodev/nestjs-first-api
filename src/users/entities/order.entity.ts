@@ -19,6 +19,7 @@ export class Order {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Exclude()
   @CreateDateColumn({
     type: 'timestamptz',
     name: 'created_at',
@@ -26,6 +27,7 @@ export class Order {
   })
   createdAt: Date;
 
+  @Exclude()
   @UpdateDateColumn({
     type: 'timestamptz',
     name: 'update_at',

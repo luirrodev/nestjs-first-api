@@ -7,6 +7,7 @@ import {
   OneToOne,
   JoinColumn,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 
 import { Customer } from './customer.entity';
 
@@ -26,6 +27,7 @@ export class User {
   @Column({ type: 'varchar', length: 255 })
   role: string;
 
+  @Exclude()
   @CreateDateColumn({
     type: 'timestamptz',
     name: 'created_at',
@@ -33,6 +35,7 @@ export class User {
   })
   createdAt: Date;
 
+  @Exclude()
   @UpdateDateColumn({
     type: 'timestamptz',
     name: 'update_at',

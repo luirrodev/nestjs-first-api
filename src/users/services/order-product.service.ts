@@ -6,26 +6,22 @@ import {
   CreateOrderProductDTO,
   UpdateOrderProductDto,
 } from '../dtos/order-product.dto';
-import { Order } from '../entities/order.entity';
 import { OrderProduct } from '../entities/order-product.entity';
-import { Product } from 'src/products/entities/product.entity';
+import { OrdersService } from './orders.service';
+import { ProductsService } from 'src/products/services/products.service';
 
 @Injectable()
 export class OrderProductService {
   constructor(
-    @InjectRepository(Order) private orderRepo: Repository<Order>,
-    @InjectRepository(Product) private productRepo: Repository<Product>,
+    private orderService: OrdersService,
+    private productService: ProductsService,
     @InjectRepository(OrderProduct)
     private itemRepo: Repository<OrderProduct>,
   ) {}
 
   async create(data: CreateOrderProductDTO) {
-    const order = await this.orderRepo.findOne({
-      where: { id: data.orderId },
-    });
-    const product = await this.productRepo.findOne({
-      where: { id: data.productId },
-    });
+    const order = await this.orderService.findOne(data.orderId);
+    const product = await this.productService.findOne(data.productId);
     const item = new OrderProduct();
 
     item.order = order;
@@ -39,15 +35,11 @@ export class OrderProductService {
     const item = await this.itemRepo.findOne({ where: { id } });
 
     if (changes.orderId) {
-      const order = await this.orderRepo.findOne({
-        where: { id: changes.orderId },
-      });
+      const order = await this.orderService.findOne(changes.orderId);
       item.order = order;
     }
     if (changes.productId) {
-      const product = await this.productRepo.findOne({
-        where: { id: changes.productId },
-      });
+      const product = await this.productService.findOne(changes.productId);
       item.product = product;
     }
     this.itemRepo.merge(item, changes);

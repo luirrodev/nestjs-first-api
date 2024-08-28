@@ -7,6 +7,7 @@ import {
   OneToOne,
   OneToMany,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 
 import { User } from './user.entity';
 import { Order } from './order.entity';
@@ -26,6 +27,7 @@ export class Customer {
   @Column({ type: 'varchar', length: 255 })
   phone: string;
 
+  @Exclude()
   @CreateDateColumn({
     type: 'timestamptz',
     name: 'created_at',
@@ -33,6 +35,7 @@ export class Customer {
   })
   createdAt: Date;
 
+  @Exclude()
   @UpdateDateColumn({
     type: 'timestamptz',
     name: 'update_at',
