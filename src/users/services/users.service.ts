@@ -44,7 +44,9 @@ export class UsersService {
     if (existingUser) {
       throw new ConflictException('This email is already in use');
     }
+
     const newUser = this.userRepo.create(data);
+
     if (data.customerId) {
       const customer = await this.customerService.findOne(data.customerId);
       newUser.customer = customer;
@@ -53,30 +55,26 @@ export class UsersService {
   }
 
   async update(id: number, changes: UpdateUserDto) {
-    const existingUser = await this.userRepo.findOne({
-      where: { email: changes.email },
-    });
-
-    if (existingUser) {
-      throw new ConflictException('This email is already in use');
+    if (changes.email) {
+      const existingUser = await this.userRepo.findOne({
+        where: { email: changes.email },
+      });
+      if (existingUser) {
+        throw new ConflictException('This email is already in use');
+      }
     }
+
     const userToUpdate = await this.findOne(id);
+
+    if (changes.customerId) {
+      const customer = await this.customerService.findOne(changes.customerId);
+      userToUpdate.customer = customer;
+    }
     this.userRepo.merge(userToUpdate, changes);
     return this.userRepo.save(userToUpdate);
   }
 
   remove(id: number) {
     return this.userRepo.delete(id);
-  }
-
-  async getOrdersByUser(id: number) {
-    const user = this.findOne(id);
-    return {
-      id,
-      date: new Date(),
-      user,
-      products: await this.productService.findAll(),
-    };
-    return id;
   }
 }
