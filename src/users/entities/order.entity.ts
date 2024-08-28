@@ -10,7 +10,7 @@ import {
 import { Exclude, Expose } from 'class-transformer';
 
 import { Customer } from './customer.entity';
-import { OrderProduct } from 'src/products/entities/order-product.entity';
+import { OrderProduct } from './order-product.entity';
 
 @Entity({
   name: 'orders',

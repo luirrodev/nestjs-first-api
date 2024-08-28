@@ -9,8 +9,8 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
-import { Order } from 'src/users/entities/order.entity';
-import { Product } from './product.entity';
+import { Order } from './order.entity';
+import { Product } from '../../products/entities/product.entity';
 
 @Entity({
   name: 'orders_products',

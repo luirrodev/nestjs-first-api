@@ -7,7 +7,7 @@ import {
   UpdateOrderProductDto,
 } from '../dtos/order-product.dto';
 import { Order } from '../entities/order.entity';
-import { OrderProduct } from 'src/products/entities/order-product.entity';
+import { OrderProduct } from '../entities/order-product.entity';
 import { Product } from 'src/products/entities/product.entity';
 
 @Injectable()
