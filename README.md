@@ -1,8 +1,8 @@
-# StoreAPI
+# Nestjs MyFirst API
 
 #### Descripción
 
-Proyecto de aprendizaje de NestJS para crear una tienda online.
+A learning project for exploring NestJS framework fundamentals, including REST API development, database integration with TypeORM, migrations, and API documentation with Swagger. This project serves as a practice ground for understanding dependency injection, modular architecture, and backend development best practices in a TypeScript environment.
 
 ## Instalación en modo desarrollo
 

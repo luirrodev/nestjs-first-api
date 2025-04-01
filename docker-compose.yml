@@ -1,23 +1,29 @@
-version: '3.8'
+version: '3.9'
 
 services:
   postgres:
-    image: postgres
+    image: postgres:17-alpine
+    container_name: nestjs-first-api-postgres
+    restart: unless-stopped
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: 12345678
-      POSTGRES_DB: my_db
+      POSTGRES_DB: nestjs_first_api_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     ports:
       - '5432:5432'
-    volumes:
-      - ./postgres_data:/var/lib/postgresql/data
+    networks:
+      - nestjs-network
+    labels:
+      com.nestjs-first-api.service: 'database'
+      com.nestjs-first-api.env: 'development'
 
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: root@admin.com
-      PGADMIN_DEFAULT_PASSWORD: root
-    ports:
-      - '5050:80'
-    depends_on:
-      - postgres
+volumes:
+  postgres_data:
+    name: nestjs-first-api-postgres-data
+
+networks:
+  nestjs-network:
+    name: nestjs-first-api-network
+    driver: bridge
