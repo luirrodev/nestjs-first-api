@@ -33,6 +33,6 @@ import { UsersService } from './services/users.service';
     OrdersService,
     OrderProductService,
   ],
-  exports: [],
+  exports: [UsersService],
 })
 export class UsersModule {}
