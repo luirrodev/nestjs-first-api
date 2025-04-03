@@ -48,7 +48,9 @@ export class UsersService {
   }
 
   async create(data: CreateUserDto) {
-    const existingUser = await this.findByEmail(data.email);
+    const existingUser = await this.userRepo.findOne({
+      where: { email: data.email },
+    });
 
     if (existingUser) {
       throw new ConflictException('This email is already in use');
