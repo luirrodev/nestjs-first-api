@@ -1,26 +1,55 @@
-# Usamos la imagen oficial de Node.js como base
-FROM node:20-alpine3.19
+# Etapa de construcción
+FROM node:20-alpine3.19 AS builder
 
-# Establecemos el directorio de trabajo dentro del contenedor
+# Establecer directorio de trabajo
 WORKDIR /usr/src/app
 
-# Copiamos los archivos package.json y pnpm-lock.yaml al directorio de trabajo
-COPY package*.json pnpm-lock.yaml ./
+# Copiar archivos de paquetes para mejor caché
+COPY package.json pnpm-lock.yaml ./
 
-# Instalamos pnpm
+# Instalar pnpm globalmente
 RUN npm install -g pnpm
 
-# Instalamos las dependencias de la aplicación usando pnpm
+# Instalar dependencias con pnpm
+RUN pnpm config set fetch-retry-mintimeout=100
+RUN pnpm config set fetch-retry-maxtimeout=100
+RUN pnpm config set fetch-retries=1000000
 RUN pnpm install --frozen-lockfile
 
-# Copiamos el resto de los archivos de código fuente al directorio de trabajo
+# Copiar el resto del código de la aplicación
 COPY . .
 
-# Compilamos la aplicación NestJS
+# Construir la aplicación NestJS
 RUN pnpm run build
 
-# Exponemos el puerto que nuestra aplicación usará
+# Etapa de producción
+FROM node:20-alpine3.19 AS production
+
+# Establecer NODE_ENV a producción
+ENV NODE_ENV=prod
+
+# Establecer directorio de trabajo
+WORKDIR /usr/src/app
+
+# Copiar archivos de paquetes
+COPY package.json pnpm-lock.yaml ./
+
+# Instalar pnpm globalmente
+RUN npm install -g pnpm
+
+# Instalar solo dependencias de producción
+RUN pnpm config set fetch-retry-mintimeout=100
+RUN pnpm config set fetch-retry-maxtimeout=100
+RUN pnpm config set fetch-retries=1000000
+RUN pnpm install --frozen-lockfile --prod
+
+# Copiar la aplicación construida desde la etapa de builder
+COPY --from=builder /usr/src/app/dist ./dist
+
+# Exponer el puerto de la aplicación
 EXPOSE 3000
 
-# Comando para iniciar la aplicación
-CMD ["pnpm", "run", "start:prod"]
+# Comando para ejecutar la aplicación
+# Las variables de entorno se pasarán al ejecutar el contenedor con:
+# docker run -e DATABASE_URL=xxx -e JWT_SECRET=yyy ...
+CMD ["node", "dist/main.js"]
