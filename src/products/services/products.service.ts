@@ -45,7 +45,7 @@ export class ProductsService {
       relations: ['brand', 'categories'],
     });
     if (!product) {
-      throw new NotFoundException('Este producto no existe');
+      throw new NotFoundException('Product not found');
     }
     return product;
   }
