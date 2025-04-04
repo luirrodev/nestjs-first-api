@@ -21,8 +21,11 @@ import {
 } from '../dtos/product.dtos';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/auth/models/roles.model';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @ApiTags('products')
 @Controller('products')
 export class ProductsController {
@@ -48,6 +51,7 @@ export class ProductsController {
     return this.productService.findAll(params);
   }
 
+  @Roles(Role.ADMIN)
   @Post()
   @ApiOperation({
     summary: 'Create a new product',
@@ -57,6 +61,7 @@ export class ProductsController {
     return this.productService.create(payload);
   }
 
+  @Roles(Role.ADMIN)
   @Put(':id')
   @ApiOperation({
     summary: 'Update an existing product',
@@ -69,6 +74,7 @@ export class ProductsController {
     return this.productService.update(id, payload);
   }
 
+  @Roles(Role.ADMIN)
   @Delete(':id')
   @ApiOperation({
     summary: 'Delete a product',
