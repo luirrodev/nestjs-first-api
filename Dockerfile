@@ -53,4 +53,9 @@ EXPOSE 3000
 # Comando para ejecutar la aplicación
 # Las variables de entorno se pasarán al ejecutar el contenedor con:
 # docker run -e DATABASE_URL=xxx -e JWT_SECRET=yyy ...
-CMD ["node", "dist/main.js"]
+# Copiar el script de entrada
+COPY docker-entrypoint.sh ./
+RUN chmod +x ./docker-entrypoint.sh
+
+# Comando para ejecutar el script de entrada
+ENTRYPOINT ["./docker-entrypoint.sh"]
