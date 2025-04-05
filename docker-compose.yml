@@ -19,7 +19,7 @@ services:
       com.nestjs-first-api.service: 'database'
       com.nestjs-first-api.env: 'development'
   app:
-    image: nestjs-first-api:latest
+    image: ghcr.io/luirrodev/nestjs-first-api:latest
     container_name: nestjs-first-api-app
     restart: unless-stopped
     ports:

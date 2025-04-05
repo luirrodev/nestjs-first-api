@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # Ejecutar migraciones
 echo "Ejecutando migraciones..."
 pnpm run migration:run
