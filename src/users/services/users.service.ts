@@ -10,7 +10,7 @@ import { User } from '../entities/user.entity';
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
 import { ProductsService } from 'src/products/services/products.service';
 import { CustomersService } from './customers.service';
-import bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -57,6 +57,7 @@ export class UsersService {
     }
 
     const newUser = this.userRepo.create(data);
+
     const hashPassword = await bcrypt.hash(newUser.password, 10);
     newUser.password = hashPassword;
 
