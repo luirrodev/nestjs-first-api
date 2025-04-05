@@ -1,19 +1,18 @@
 # Etapa de construcción
 FROM node:20-alpine3.19 AS builder
 
-# Establecer directorio de trabajo
 WORKDIR /usr/src/app
 
-# Copiar archivos de paquetes para mejor caché
 COPY package.json pnpm-lock.yaml ./
 
-# Instalar pnpm globalmente
 RUN npm install -g pnpm
 
-# Instalar dependencias con pnpm
+#Configuraciones necesarias de pnpm
 RUN pnpm config set fetch-retry-mintimeout=100
 RUN pnpm config set fetch-retry-maxtimeout=100
 RUN pnpm config set fetch-retries=1000000
+
+# Instalar dependencias con pnpm
 RUN pnpm install --frozen-lockfile
 
 # Copiar el resto del código de la aplicación
@@ -37,10 +36,12 @@ COPY package.json pnpm-lock.yaml ./
 # Instalar pnpm globalmente
 RUN npm install -g pnpm
 
-# Instalar solo dependencias de producción
+#Configuraciones necesarias de pnpm
 RUN pnpm config set fetch-retry-mintimeout=100
 RUN pnpm config set fetch-retry-maxtimeout=100
 RUN pnpm config set fetch-retries=1000000
+
+# Instalar solo dependencias de producción
 RUN pnpm install --frozen-lockfile --prod
 
 # Copiar la aplicación construida desde la etapa de builder
