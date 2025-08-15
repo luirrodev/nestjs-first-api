@@ -3,7 +3,7 @@ name: Keep Render App Alive
 # Solo programado, NO se ejecuta en push/PR
 on:
   schedule:
-    - cron: '*/14 * * * *' # Cada 14 minutos
+    - cron: '*/10 * * * *' # Cada 10 minutos
   workflow_dispatch: # Permite ejecución manual
 
 jobs:
