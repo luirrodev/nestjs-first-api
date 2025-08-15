@@ -24,3 +24,15 @@ jobs:
         run: |
           docker build . --tag ghcr.io/luirrodev/nestjs-first-api:latest
           docker push ghcr.io/luirrodev/nestjs-first-api:latest
+
+      - name: Deploy to Render
+        if: success() && github.ref == 'refs/heads/main'
+        run: |
+          echo "Triggering deployment to Render..."
+          response=$(curl -s -o /dev/null -w "%{http_code}" -X GET "${{ secrets.RENDER_DEPLOY_HOOK }}")
+          if [ "$response" -eq 200 ]; then
+            echo "✅ Deployment triggered successfully!"
+          else
+            echo "❌ Failed to trigger deployment. HTTP status: $response"
+            exit 1
+          fi
