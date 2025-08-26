@@ -1,30 +1,30 @@
-name: Keep Render App Alive
+# name: Keep Render App Alive
 
-# Solo programado, NO se ejecuta en push/PR
-on:
-  schedule:
-    - cron: '*/10 * * * *' # Cada 10 minutos
-  # workflow_dispatch: # Permite ejecución manual
+# # Solo programado, NO se ejecuta en push/PR
+# on:
+#   schedule:
+#     - cron: '*/10 * * * *' # Cada 10 minutos
+#   # workflow_dispatch: # Permite ejecución manual
 
-jobs:
-  ping:
-    runs-on: ubuntu-latest
+# jobs:
+#   ping:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Ping Render App
-        run: |
-          echo "Haciendo ping a la aplicación..."
-          response=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.RENDER_APP_URL }})
-          echo "Código de respuesta: $response"
+#     steps:
+#       - name: Ping Render App
+#         run: |
+#           echo "Haciendo ping a la aplicación..."
+#           response=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.RENDER_APP_URL }})
+#           echo "Código de respuesta: $response"
 
-          if [ $response -eq 200 ]; then
-            echo "✅ App está activa y respondiendo correctamente"
-          elif [ $response -eq 404 ]; then
-            echo "⚠️  App activa pero ruta no encontrada (normal si no tienes ruta raíz)"
-          else
-            echo "❌ App no está respondiendo correctamente"
-            exit 1
-          fi
+#           if [ $response -eq 200 ]; then
+#             echo "✅ App está activa y respondiendo correctamente"
+#           elif [ $response -eq 404 ]; then
+#             echo "⚠️  App activa pero ruta no encontrada (normal si no tienes ruta raíz)"
+#           else
+#             echo "❌ App no está respondiendo correctamente"
+#             exit 1
+#           fi
 
-      - name: Timestamp
-        run: echo "Último ping realizado el $(date)"
+#       - name: Timestamp
+#         run: echo "Último ping realizado el $(date)"
